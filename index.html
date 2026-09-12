@@ -1,169 +1,636 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Cachorro Maluco</title>
-  <meta name="description" content="Cachorro Maluco - uma pagina divertida e animada.">
-  <meta name="theme-color" content="#4facfe">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Cachorro Maluco - O Jogo</title>
+<meta name="description" content="Ajude o Cachorro Maluco a pegar ossos, bolinhas e petiscos. Desvie das abelhas! Jogo gratis para todas as idades.">
+<meta name="theme-color" content="#4facfe">
 
-  <!-- Compartilhamento em redes sociais (WhatsApp, Facebook, etc.) -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Cachorro Maluco">
-  <meta property="og:description" content="Clique no cachorro e veja o que acontece!">
-  <meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cachorro Maluco - O Jogo">
+<meta property="og:description" content="Pegue os ossos, desvie das abelhas. Quantos pontos voce faz?">
 
-  <!-- Icone da aba do navegador -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%90%B6</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%90%B6</text></svg>">
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
+  html,body{
+    height:100%;
+    overflow:hidden;
+    background:#4facfe;
+    font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:none;
+    overscroll-behavior:none;
+  }
 
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      min-height: 100dvh;            /* mobile: desconta a barra do navegador */
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      font-family: Arial, Helvetica, sans-serif;
-      text-align: center;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      padding: 1rem;
-    }
+  #palco{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    overflow:hidden;
+  }
 
-    h1 {
-      color: white;
-      font-size: clamp(2rem, 12vw, 4rem);   /* nunca estoura no celular */
-      margin: 0 0 1rem;
-      text-shadow: 3px 3px 8px rgba(0,0,0,0.3);
-      animation: balancar 0.5s infinite alternate;
-    }
+  #jogo{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
 
-    @keyframes balancar {
-      from { transform: rotate(-5deg) scale(1); }
-      to   { transform: rotate(5deg) scale(1.1); }
-    }
+  /* ---------- HUD ---------- */
+  /* pontos + vidas empilhados na esquerda; os botoes redondos ficam
+     na direita, por isso o HUD nao pode ocupar a largura toda */
+  #hud{
+    position:absolute;
+    top:max(10px,env(safe-area-inset-top));
+    left:max(12px,env(safe-area-inset-left));
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:.15rem;
+    color:#fff;
+    font-size:clamp(.95rem,4vw,1.35rem);
+    font-weight:bold;
+    text-shadow:2px 2px 5px rgba(0,0,0,.3);
+    pointer-events:none;
+    letter-spacing:.5px;
+  }
+  #hud.escondido{display:none}
 
-    /* O cachorro */
-    #cachorro {
-      font-size: clamp(4rem, 25vw, 9rem);
-      line-height: 1;
-      cursor: pointer;
-      display: inline-block;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.25));
-      transition: transform 0.12s ease;
-      animation: pular 1.2s ease-in-out infinite;
-    }
+  /* caixa do tamanho do texto e centralizada de verdade: se ocupasse a
+     largura toda, ela passaria por baixo dos botoes redondos */
+  #fase{
+    position:absolute;
+    top:max(10px,env(safe-area-inset-top));
+    left:50%;
+    transform:translateX(-50%);
+    max-width:calc(100% - 14rem);
+    white-space:nowrap;
+    text-align:center;
+    color:#fff;
+    font-size:clamp(.95rem,4vw,1.35rem);
+    font-weight:bold;
+    text-shadow:2px 2px 5px rgba(0,0,0,.3);
+    pointer-events:none;
+    opacity:.9;
+  }
+  #fase.escondido{display:none}
 
-    #cachorro:active { transform: scale(0.9); }
+  #vidas{font-size:clamp(1rem,4.5vw,1.5rem);letter-spacing:2px}
 
-    @keyframes pular {
-      0%, 100% { translate: 0 0; }
-      50%      { translate: 0 -14px; }
-    }
+  /* ---------- Telas ---------- */
+  .tela{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:1.2rem;
+    color:#fff;
+    background:rgba(0,0,0,.28);
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+  }
+  .tela.escondido{display:none}
 
-    /* Ao clicar: gira uma volta */
-    #cachorro.girando { animation: girar 0.6s ease-in-out; }
+  .tela h1{
+    font-size:clamp(1.9rem,10vw,3.4rem);
+    text-shadow:3px 3px 8px rgba(0,0,0,.35);
+    line-height:1.05;
+    margin-bottom:.2rem;
+  }
 
-    @keyframes girar {
-      from { transform: rotate(0deg)   scale(1); }
-      50%  { transform: rotate(180deg) scale(1.25); }
-      to   { transform: rotate(360deg) scale(1); }
-    }
+  .tela .mascote{
+    font-size:clamp(3.4rem,20vw,6rem);
+    line-height:1;
+    margin:.3rem 0 .6rem;
+    animation:pular 1.2s ease-in-out infinite;
+  }
+  @keyframes pular{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-    #latido {
-      color: #fff;
-      font-size: clamp(1.1rem, 5vw, 1.6rem);
-      font-weight: bold;
-      min-height: 2.2em;
-      margin: 0.4rem 0 0;
-      text-shadow: 2px 2px 6px rgba(0,0,0,0.25);
-    }
+  .tela p{
+    font-size:clamp(.9rem,4vw,1.15rem);
+    text-shadow:1px 1px 4px rgba(0,0,0,.35);
+    margin:.25rem 0;
+    max-width:22rem;
+    line-height:1.45;
+  }
 
-    #contador {
-      color: rgba(255,255,255,0.9);
-      font-size: clamp(0.85rem, 3.5vw, 1rem);
-      margin-top: 0.2rem;
-      letter-spacing: 0.5px;
-    }
+  .botao{
+    margin-top:1.1rem;
+    padding:.85rem 2.3rem;
+    font-size:clamp(1.05rem,5vw,1.4rem);
+    font-weight:bold;
+    font-family:inherit;
+    color:#0b6b8f;
+    background:#fff;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow:0 6px 0 rgba(0,0,0,.18);
+    transition:transform .1s ease,box-shadow .1s ease;
+  }
+  .botao:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+  .botao.secundario{
+    margin-top:.6rem;
+    background:rgba(255,255,255,.22);
+    color:#fff;
+    box-shadow:0 4px 0 rgba(0,0,0,.14);
+    font-size:clamp(.85rem,3.8vw,1rem);
+    padding:.6rem 1.6rem;
+  }
 
-    .dica {
-      position: fixed;
-      bottom: max(1rem, env(safe-area-inset-bottom));
-      left: 0;
-      right: 0;
-      color: rgba(255,255,255,0.85);
-      font-size: clamp(0.75rem, 3vw, 0.95rem);
-    }
+  .legenda{
+    margin-top:1rem;
+    font-size:clamp(.8rem,3.6vw,1rem);
+    line-height:1.9;
+    opacity:.95;
+  }
+  .legenda b{font-size:1.25em;vertical-align:-.1em}
 
-    /* Respeita quem prefere menos animacao */
-    @media (prefers-reduced-motion: reduce) {
-      h1, #cachorro { animation: none; }
-    }
-  </style>
+  #placarFinal{
+    font-size:clamp(1.4rem,7vw,2.2rem);
+    font-weight:bold;
+    margin:.4rem 0 .1rem;
+  }
+  #recordeFinal{opacity:.9}
+  #novoRecorde{
+    font-size:clamp(1rem,4.6vw,1.3rem);
+    font-weight:bold;
+    color:#fff36b;
+    margin-top:.35rem;
+  }
+  #novoRecorde.escondido{display:none}
+
+  /* ---------- Botoes de canto ---------- */
+  .canto{
+    position:absolute;
+    top:max(8px,env(safe-area-inset-top));
+    width:2.6rem;height:2.6rem;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.2rem;
+    background:rgba(255,255,255,.2);
+    border:none;border-radius:50%;
+    color:#fff;cursor:pointer;
+    line-height:1;
+  }
+  #btnSom{right:max(10px,env(safe-area-inset-right))}
+  #btnPausa{right:calc(max(10px,env(safe-area-inset-right)) + 3.1rem)}
+  .canto.escondido{display:none}
+
+  /* Aviso de fase nova */
+  #avisoFase{
+    position:absolute;
+    top:38%;left:0;right:0;
+    text-align:center;
+    color:#fff;
+    font-size:clamp(1.6rem,9vw,3rem);
+    font-weight:bold;
+    text-shadow:3px 3px 10px rgba(0,0,0,.4);
+    opacity:0;
+    pointer-events:none;
+  }
+  #avisoFase.mostrar{animation:flash 1.5s ease-out}
+  @keyframes flash{
+    0%{opacity:0;transform:scale(.6)}
+    25%{opacity:1;transform:scale(1.1)}
+    70%{opacity:1;transform:scale(1)}
+    100%{opacity:0;transform:scale(1)}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .tela .mascote{animation:none}
+  }
+</style>
 </head>
 <body>
 
-  <h1>Cachorro Maluco</h1>
+<div id="palco">
+  <canvas id="jogo"></canvas>
 
-  <div id="cachorro" role="button" tabindex="0" aria-label="Clique no cachorro">🐶</div>
+  <div id="hud" class="escondido">
+    <div><span id="pontos">0</span> pts</div>
+    <div id="vidas">❤️❤️❤️</div>
+  </div>
+  <div id="fase" class="escondido">Fase 1</div>
 
-  <p id="latido">Au au!</p>
-  <p id="contador">0 latidos</p>
+  <button id="btnPausa" class="canto escondido" aria-label="Pausar">⏸</button>
+  <button id="btnSom"   class="canto"           aria-label="Ligar ou desligar o som">🔊</button>
 
-  <p class="dica">Toque no cachorro 🐾</p>
+  <div id="avisoFase"></div>
 
-  <script>
-    const cachorro = document.getElementById('cachorro');
-    const latido   = document.getElementById('latido');
-    const contador = document.getElementById('contador');
+  <!-- Tela inicial -->
+  <section id="telaInicio" class="tela">
+    <h1>Cachorro Maluco</h1>
+    <div class="mascote">🐶</div>
+    <p>Arraste o dedo para mover o cachorro.<br>Pegue tudo que é gostoso!</p>
+    <div class="legenda">
+      <b>🦴</b> 10 pts &nbsp; <b>🎾</b> 15 pts &nbsp; <b>🍖</b> 25 pts<br>
+      <b>💖</b> ganha uma vida<br>
+      <b>🐝</b> <b>🥾</b> cuidado, perde uma vida!
+    </div>
+    <button id="btnJogar" class="botao">JOGAR</button>
+    <p id="recordeInicio" style="margin-top:.9rem;opacity:.85"></p>
+  </section>
 
-    const falas = [
-      'Au au! 🦴',
-      'Auuuuu! 🌙',
-      'Cadê a bolinha? 🎾',
-      'Quero petisco! 🍖',
-      'Vamos passear? 🐾',
-      'Rrrrr... brincadeira! 😜',
-      'Me dá carinho! 💙'
-    ];
+  <!-- Tela de pausa -->
+  <section id="telaPausa" class="tela escondido">
+    <h1>Pausa</h1>
+    <div class="mascote">😴</div>
+    <button id="btnContinuar" class="botao">CONTINUAR</button>
+    <button id="btnSairPausa" class="botao secundario">Recomeçar</button>
+  </section>
 
-    const caras = ['🐶', '🐕', '🦮', '🐩', '🐕‍🦺'];
+  <!-- Tela de fim -->
+  <section id="telaFim" class="tela escondido">
+    <h1>Fim de jogo!</h1>
+    <div class="mascote">🐕</div>
+    <div id="placarFinal">0 pontos</div>
+    <p id="recordeFinal"></p>
+    <p id="novoRecorde" class="escondido">🏆 Novo recorde!</p>
+    <button id="btnDeNovo" class="botao">JOGAR DE NOVO</button>
+  </section>
+</div>
 
-    let cliques = 0;
+<script>
+(function(){
+  "use strict";
 
-    function enlouquecer() {
-      cliques++;
+  /* ===================== Canvas ===================== */
+  const canvas = document.getElementById('jogo');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0;
 
-      latido.textContent   = falas[Math.floor(Math.random() * falas.length)];
-      cachorro.textContent = caras[Math.floor(Math.random() * caras.length)];
-      contador.textContent = cliques + (cliques === 1 ? ' latido' : ' latidos');
+  function redimensionar(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth;
+    H = canvas.clientHeight;
+    canvas.width  = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cachorro.tam = Math.max(42, Math.min(W, H) * 0.14);
+    cachorro.y = H - cachorro.tam * 0.62;
+    cachorro.x = Math.min(Math.max(cachorro.x, cachorro.tam/2), W - cachorro.tam/2);
+    cachorro.alvoX = cachorro.x;
+  }
 
-      // reinicia a animacao de giro
-      cachorro.classList.remove('girando');
-      void cachorro.offsetWidth;
-      cachorro.classList.add('girando');
+  /* ===================== Estado ===================== */
+  const ESTADO = { INICIO:'inicio', JOGANDO:'jogando', PAUSA:'pausa', FIM:'fim' };
+  let estado = ESTADO.INICIO;
+
+  const cachorro = { x:0, y:0, alvoX:0, tam:70, cara:'🐶', piscar:0 };
+
+  let itens = [];
+  let flutuantes = [];
+  let pontos = 0, vidas = 3, fase = 1;
+  let tempoSpawn = 0, ultimo = 0;
+  let recorde = 0;
+
+  const BONS = [
+    { e:'🦴', pts:10, peso:5 },
+    { e:'🎾', pts:15, peso:3 },
+    { e:'🍖', pts:25, peso:2 }
+  ];
+  const RUINS = ['🐝','🥾'];
+  const CARAS = ['🐶','🐕','🦮','🐩'];
+
+  const PONTOS_POR_FASE = 150;
+  const MAX_VIDAS = 5;
+
+  /* ===================== Recorde (localStorage) ===================== */
+  function lerRecorde(){
+    try{ return parseInt(localStorage.getItem('cachorroMalucoRecorde') || '0', 10) || 0; }
+    catch(e){ return 0; }
+  }
+  function salvarRecorde(v){
+    try{ localStorage.setItem('cachorroMalucoRecorde', String(v)); }catch(e){}
+  }
+
+  /* ===================== Som (sem arquivos) ===================== */
+  let audioCtx = null, somLigado = true;
+  try{ somLigado = localStorage.getItem('cachorroMalucoSom') !== '0'; }catch(e){}
+
+  function tocar(freq, dur, tipo){
+    if(!somLigado) return;
+    try{
+      if(!audioCtx){
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC) return;
+        audioCtx = new AC();
+      }
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gan = audioCtx.createGain();
+      osc.type = tipo || 'sine';
+      osc.frequency.value = freq;
+      gan.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+      gan.gain.exponentialRampToValueAtTime(0.18, audioCtx.currentTime + 0.01);
+      gan.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+      osc.connect(gan); gan.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + dur + 0.02);
+    }catch(e){}
+  }
+  const somPegou   = () => tocar(880, 0.12, 'triangle');
+  const somPetisco = () => { tocar(660,0.10,'triangle'); setTimeout(()=>tocar(990,0.12,'triangle'),90); };
+  const somVida    = () => { tocar(700,0.10,'sine'); setTimeout(()=>tocar(1050,0.16,'sine'),100); };
+  const somErro    = () => tocar(150, 0.30, 'sawtooth');
+  const somFase    = () => { tocar(520,0.10,'square'); setTimeout(()=>tocar(700,0.10,'square'),110); setTimeout(()=>tocar(950,0.18,'square'),220); };
+  const somFim     = () => { tocar(400,0.18,'sawtooth'); setTimeout(()=>tocar(300,0.22,'sawtooth'),180); setTimeout(()=>tocar(200,0.35,'sawtooth'),400); };
+
+  /* ===================== Dificuldade ===================== */
+  const velocidadeQueda = () => H * (0.30 + (fase - 1) * 0.055);
+  const intervaloSpawn  = () => Math.max(360, 1000 - (fase - 1) * 85);
+  const chanceRuim      = () => Math.min(0.40, 0.14 + (fase - 1) * 0.028);
+
+  /* ===================== Itens ===================== */
+  function sortearBom(){
+    const total = BONS.reduce((s,b)=>s+b.peso,0);
+    let r = Math.random() * total;
+    for(const b of BONS){ if((r -= b.peso) <= 0) return b; }
+    return BONS[0];
+  }
+
+  function criarItem(){
+    const tam = cachorro.tam * 0.55;
+    const x = tam/2 + Math.random() * Math.max(1, W - tam);
+    const sorte = Math.random();
+
+    if(sorte < 0.025 && vidas < MAX_VIDAS){
+      return { x, y:-tam, tam, emoji:'💖', tipo:'vida', giro:0, vg:(Math.random()-0.5)*2 };
+    }
+    if(sorte < 0.025 + chanceRuim()){
+      return { x, y:-tam, tam, emoji:RUINS[Math.floor(Math.random()*RUINS.length)], tipo:'ruim', giro:0, vg:(Math.random()-0.5)*4 };
+    }
+    const b = sortearBom();
+    return { x, y:-tam, tam, emoji:b.e, pts:b.pts, tipo:'bom', giro:0, vg:(Math.random()-0.5)*2 };
+  }
+
+  function textoFlutuante(x, y, txt, cor){
+    flutuantes.push({ x, y, txt, cor, vida:1 });
+  }
+
+  /* ===================== Controles ===================== */
+  function moverPara(clientX){
+    const r = canvas.getBoundingClientRect();
+    cachorro.alvoX = Math.min(Math.max(clientX - r.left, cachorro.tam/2), W - cachorro.tam/2);
+  }
+
+  canvas.addEventListener('pointerdown', e => { if(estado===ESTADO.JOGANDO){ e.preventDefault(); moverPara(e.clientX); } });
+  canvas.addEventListener('pointermove', e => { if(estado===ESTADO.JOGANDO){ e.preventDefault(); moverPara(e.clientX); } });
+
+  const teclas = {};
+  addEventListener('keydown', e => {
+    if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ teclas[e.key]=true; e.preventDefault(); }
+    if(e.key==='p'||e.key==='P'||e.key==='Escape'){ alternarPausa(); }
+    if((e.key===' '||e.key==='Enter') && estado!==ESTADO.JOGANDO){ e.preventDefault(); comecar(); }
+  });
+  addEventListener('keyup', e => { teclas[e.key]=false; });
+
+  function tecladoPasso(dt){
+    const passo = W * 1.15 * dt;
+    if(teclas.ArrowLeft)  cachorro.alvoX -= passo;
+    if(teclas.ArrowRight) cachorro.alvoX += passo;
+    cachorro.alvoX = Math.min(Math.max(cachorro.alvoX, cachorro.tam/2), W - cachorro.tam/2);
+  }
+
+  /* ===================== Telas ===================== */
+  const el = id => document.getElementById(id);
+  const telaInicio = el('telaInicio'), telaPausa = el('telaPausa'), telaFim = el('telaFim');
+  const hud = el('hud'), btnPausa = el('btnPausa'), btnSom = el('btnSom');
+  const avisoFase = el('avisoFase');
+  const elFase = el('fase');
+
+  function mostrar(elm, sim){ elm.classList.toggle('escondido', !sim); }
+
+  // "Fase N" fica fora da caixa do HUD (para nao bater nos botoes redondos),
+  // entao os dois precisam aparecer e sumir juntos.
+  function mostrarHud(sim){ mostrar(hud, sim); mostrar(elFase, sim); mostrar(btnPausa, sim); }
+
+  function atualizarHud(){
+    el('pontos').textContent = pontos;
+    el('fase').textContent = 'Fase ' + fase;
+    el('vidas').textContent = '❤️'.repeat(vidas) || '💔';
+  }
+
+  function comecar(){
+    pontos = 0; vidas = 3; fase = 1;
+    itens = []; flutuantes = [];
+    tempoSpawn = 0;
+    cachorro.cara = '🐶';
+    cachorro.x = cachorro.alvoX = W/2;
+    estado = ESTADO.JOGANDO;
+    mostrar(telaInicio,false); mostrar(telaPausa,false); mostrar(telaFim,false);
+    mostrarHud(true);
+    atualizarHud();
+    tocar(600,0.1,'triangle');
+  }
+
+  function alternarPausa(){
+    if(estado===ESTADO.JOGANDO){
+      estado = ESTADO.PAUSA; mostrar(telaPausa,true);
+    } else if(estado===ESTADO.PAUSA){
+      estado = ESTADO.JOGANDO; mostrar(telaPausa,false); ultimo = 0;
+    }
+  }
+
+  function fimDeJogo(){
+    estado = ESTADO.FIM;
+    somFim();
+    itens = []; flutuantes = [];   // limpa o cenario atras da tela de fim
+    mostrarHud(false); mostrar(telaPausa,false);
+    el('placarFinal').textContent = pontos + (pontos===1 ? ' ponto' : ' pontos');
+    const bateu = pontos > recorde;
+    if(bateu){ recorde = pontos; salvarRecorde(recorde); }
+    el('recordeFinal').textContent = 'Seu recorde: ' + recorde;
+    mostrar(el('novoRecorde'), bateu);
+    el('novoRecorde').classList.toggle('escondido', !bateu);
+    mostrar(telaFim,true);
+  }
+
+  function subirFase(){
+    fase++;
+    somFase();
+    avisoFase.textContent = 'FASE ' + fase;
+    avisoFase.classList.remove('mostrar');
+    void avisoFase.offsetWidth;
+    avisoFase.classList.add('mostrar');
+    atualizarHud();
+  }
+
+  /* ===================== Loop ===================== */
+  function passo(agora){
+    requestAnimationFrame(passo);
+
+    if(!ultimo) ultimo = agora;
+    let dt = (agora - ultimo) / 1000;
+    ultimo = agora;
+    if(dt > 0.05) dt = 0.05;            // evita salto depois de trocar de aba
+
+    if(estado === ESTADO.JOGANDO){
+      tecladoPasso(dt);
+
+      // cachorro segue o alvo suavemente
+      cachorro.x += (cachorro.alvoX - cachorro.x) * Math.min(1, dt * 14);
+
+      // nascer itens
+      tempoSpawn += dt * 1000;
+      if(tempoSpawn >= intervaloSpawn()){
+        tempoSpawn = 0;
+        itens.push(criarItem());
+      }
+
+      // mover e colidir
+      const vq = velocidadeQueda();
+      for(let i = itens.length - 1; i >= 0; i--){
+        const it = itens[i];
+        it.y += vq * dt;
+        it.giro += it.vg * dt;
+
+        const dx = Math.abs(it.x - cachorro.x);
+        const dy = Math.abs(it.y - cachorro.y);
+        if(dx < (cachorro.tam*0.42 + it.tam*0.32) && dy < (cachorro.tam*0.42 + it.tam*0.32)){
+          if(it.tipo === 'bom'){
+            pontos += it.pts;
+            textoFlutuante(it.x, it.y, '+' + it.pts, '#ffffff');
+            it.pts >= 25 ? somPetisco() : somPegou();
+            cachorro.cara = CARAS[Math.floor(Math.random()*CARAS.length)];
+            if(Math.floor(pontos / PONTOS_POR_FASE) + 1 > fase) subirFase();
+          } else if(it.tipo === 'vida'){
+            if(vidas < MAX_VIDAS) vidas++;
+            textoFlutuante(it.x, it.y, '+1 ❤️', '#ffd6f0');
+            somVida();
+          } else {
+            vidas--;
+            textoFlutuante(it.x, it.y, 'Ai!', '#ffdd55');
+            somErro();
+            cachorro.piscar = 1.0;
+          }
+          itens.splice(i,1);
+          atualizarHud();
+          if(vidas <= 0){ fimDeJogo(); return; }
+          continue;
+        }
+
+        if(it.y - it.tam > H) itens.splice(i,1);
+      }
+
+      if(cachorro.piscar > 0) cachorro.piscar = Math.max(0, cachorro.piscar - dt*2);
+
+      for(let i = flutuantes.length - 1; i >= 0; i--){
+        const f = flutuantes[i];
+        f.y -= 60 * dt;
+        f.vida -= dt * 1.4;
+        if(f.vida <= 0) flutuantes.splice(i,1);
+      }
     }
 
-    cachorro.addEventListener('click', enlouquecer);
-    cachorro.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enlouquecer(); }
-    });
+    desenhar();
+  }
 
-    cachorro.addEventListener('animationend', e => {
-      if (e.animationName === 'girar') cachorro.classList.remove('girando');
-    });
-  </script>
+  function desenhar(){
+    ctx.clearRect(0,0,W,H);
 
+    // chao
+    ctx.fillStyle = 'rgba(255,255,255,0.16)';
+    ctx.fillRect(0, H - cachorro.tam*0.14, W, cachorro.tam*0.14);
+
+    // IMPORTANTE: o Chrome aplica a transparencia do fillStyle tambem nos emojis
+    // coloridos. Sem voltar para branco opaco aqui, tudo aparece desbotado.
+    ctx.fillStyle = '#ffffff';
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // itens
+    for(const it of itens){
+      ctx.save();
+      ctx.translate(it.x, it.y);
+      ctx.rotate(it.giro);
+      ctx.font = it.tam + 'px serif';
+      ctx.fillText(it.emoji, 0, 0);
+      ctx.restore();
+    }
+
+    // cachorro (nas telas de inicio e de fim quem aparece e o mascote em HTML)
+    if(estado === ESTADO.JOGANDO || estado === ESTADO.PAUSA){
+      ctx.save();
+      ctx.translate(cachorro.x, cachorro.y);
+      if(cachorro.piscar > 0) ctx.globalAlpha = (Math.floor(cachorro.piscar*10) % 2) ? 0.3 : 1;
+      ctx.font = cachorro.tam + 'px serif';
+      ctx.fillText(cachorro.cara, 0, 0);
+      ctx.restore();
+    }
+
+    // textos flutuantes
+    for(const f of flutuantes){
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, f.vida);
+      ctx.fillStyle = f.cor;
+      ctx.font = 'bold ' + Math.round(cachorro.tam*0.30) + 'px "Trebuchet MS",Arial,sans-serif';
+      ctx.shadowColor = 'rgba(0,0,0,.35)';
+      ctx.shadowBlur = 6;
+      ctx.fillText(f.txt, f.x, f.y);
+      ctx.restore();
+    }
+  }
+
+  /* ===================== Ligacoes ===================== */
+  el('btnJogar').addEventListener('click', comecar);
+  el('btnDeNovo').addEventListener('click', comecar);
+  el('btnContinuar').addEventListener('click', alternarPausa);
+  el('btnSairPausa').addEventListener('click', () => {
+    estado = ESTADO.INICIO;
+    mostrar(telaPausa,false); mostrarHud(false);
+    el('recordeInicio').textContent = recorde ? 'Seu recorde: ' + recorde : '';
+    mostrar(telaInicio,true);
+  });
+  btnPausa.addEventListener('click', alternarPausa);
+
+  btnSom.addEventListener('click', () => {
+    somLigado = !somLigado;
+    btnSom.textContent = somLigado ? '🔊' : '🔇';
+    try{ localStorage.setItem('cachorroMalucoSom', somLigado ? '1' : '0'); }catch(e){}
+    if(somLigado) tocar(700,0.1,'sine');
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden && estado === ESTADO.JOGANDO) alternarPausa();
+  });
+
+  addEventListener('resize', redimensionar);
+  addEventListener('orientationchange', () => setTimeout(redimensionar, 120));
+
+  /* ===================== Inicio ===================== */
+  btnSom.textContent = somLigado ? '🔊' : '🔇';
+  recorde = lerRecorde();
+  el('recordeInicio').textContent = recorde ? 'Seu recorde: ' + recorde : '';
+  redimensionar();
+  cachorro.x = cachorro.alvoX = W/2;
+  requestAnimationFrame(passo);
+
+  // para o teste automatico
+  window.__jogo = {
+    get estado(){ return estado; },
+    get pontos(){ return pontos; },
+    get vidas(){ return vidas; },
+    get fase(){ return fase; },
+    get itens(){ return itens.length; },
+    forcarItem(tipo){
+      const tam = cachorro.tam*0.55;
+      const mapa = { bom:{emoji:'🦴',pts:10,tipo:'bom'}, ruim:{emoji:'🐝',tipo:'ruim'}, vida:{emoji:'💖',tipo:'vida'} };
+      itens.push(Object.assign({ x:cachorro.x, y:cachorro.y - 4, tam, giro:0, vg:0 }, mapa[tipo]));
+    },
+    setPontos(v){ pontos = v; }
+  };
+})();
+</script>
 </body>
 </html>
