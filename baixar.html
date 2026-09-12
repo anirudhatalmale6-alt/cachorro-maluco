@@ -261,6 +261,17 @@
 
   </div>
 
+  <div class="cartao" style="text-align:center">
+    <p style="margin-bottom:.8rem">Ou baixe as 5 imagens de uma vez só:</p>
+    <button id="baixarTodas" class="baixar" type="button" style="border:none;cursor:pointer;font-size:1rem;font-family:inherit">
+      Baixar as 5 imagens
+    </button>
+    <p style="color:var(--suave);font-size:.9rem;margin-top:.8rem">
+      Se o navegador perguntar se pode baixar vários arquivos, clique em
+      <strong>Permitir</strong>.
+    </p>
+  </div>
+
   <h2>2. Siga os passos</h2>
 
   <div class="passo">
@@ -413,6 +424,33 @@ portuguese</textarea>
 </footer>
 
 <script>
+  // Baixa as 5 imagens em sequencia. Um clique so, sem precisar descompactar nada.
+  document.getElementById('baixarTodas').addEventListener('click', function(){
+    var btn = this;
+    var imagens = [
+      'loja/capa.png',
+      'loja/tela1-inicio.png',
+      'loja/tela2-jogando.png',
+      'loja/tela3-fim.png',
+      'loja/tela4-computador.png'
+    ];
+    btn.textContent = 'Baixando...';
+    imagens.forEach(function(caminho, i){
+      setTimeout(function(){
+        var a = document.createElement('a');
+        a.href = caminho;
+        a.download = caminho.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (i === imagens.length - 1) {
+          btn.textContent = 'Pronto, 5 imagens baixadas';
+          setTimeout(function(){ btn.textContent = 'Baixar as 5 imagens'; }, 4000);
+        }
+      }, i * 600);   // o navegador bloqueia se vierem todas no mesmo instante
+    });
+  });
+
   document.querySelectorAll('.btn-copiar').forEach(function(btn){
     btn.addEventListener('click', function(){
       var area = btn.parentElement.querySelector('textarea');
