@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Cachorro Maluco</title>
+  <meta name="description" content="Cachorro Maluco - uma pagina divertida e animada.">
+  <meta name="theme-color" content="#4facfe">
+
+  <!-- Compartilhamento em redes sociais (WhatsApp, Facebook, etc.) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Cachorro Maluco">
+  <meta property="og:description" content="Clique no cachorro e veja o que acontece!">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Icone da aba do navegador -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%90%B6</text></svg>">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      min-height: 100dvh;            /* mobile: desconta a barra do navegador */
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      padding: 1rem;
+    }
+
+    h1 {
+      color: white;
+      font-size: clamp(2rem, 12vw, 4rem);   /* nunca estoura no celular */
+      margin: 0 0 1rem;
+      text-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+      animation: balancar 0.5s infinite alternate;
+    }
+
+    @keyframes balancar {
+      from { transform: rotate(-5deg) scale(1); }
+      to   { transform: rotate(5deg) scale(1.1); }
+    }
+
+    /* O cachorro */
+    #cachorro {
+      font-size: clamp(4rem, 25vw, 9rem);
+      line-height: 1;
+      cursor: pointer;
+      display: inline-block;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.25));
+      transition: transform 0.12s ease;
+      animation: pular 1.2s ease-in-out infinite;
+    }
+
+    #cachorro:active { transform: scale(0.9); }
+
+    @keyframes pular {
+      0%, 100% { translate: 0 0; }
+      50%      { translate: 0 -14px; }
+    }
+
+    /* Ao clicar: gira uma volta */
+    #cachorro.girando { animation: girar 0.6s ease-in-out; }
+
+    @keyframes girar {
+      from { transform: rotate(0deg)   scale(1); }
+      50%  { transform: rotate(180deg) scale(1.25); }
+      to   { transform: rotate(360deg) scale(1); }
+    }
+
+    #latido {
+      color: #fff;
+      font-size: clamp(1.1rem, 5vw, 1.6rem);
+      font-weight: bold;
+      min-height: 2.2em;
+      margin: 0.4rem 0 0;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.25);
+    }
+
+    #contador {
+      color: rgba(255,255,255,0.9);
+      font-size: clamp(0.85rem, 3.5vw, 1rem);
+      margin-top: 0.2rem;
+      letter-spacing: 0.5px;
+    }
+
+    .dica {
+      position: fixed;
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      left: 0;
+      right: 0;
+      color: rgba(255,255,255,0.85);
+      font-size: clamp(0.75rem, 3vw, 0.95rem);
+    }
+
+    /* Respeita quem prefere menos animacao */
+    @media (prefers-reduced-motion: reduce) {
+      h1, #cachorro { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cachorro Maluco</h1>
+
+  <div id="cachorro" role="button" tabindex="0" aria-label="Clique no cachorro">🐶</div>
+
+  <p id="latido">Au au!</p>
+  <p id="contador">0 latidos</p>
+
+  <p class="dica">Toque no cachorro 🐾</p>
+
+  <script>
+    const cachorro = document.getElementById('cachorro');
+    const latido   = document.getElementById('latido');
+    const contador = document.getElementById('contador');
+
+    const falas = [
+      'Au au! 🦴',
+      'Auuuuu! 🌙',
+      'Cadê a bolinha? 🎾',
+      'Quero petisco! 🍖',
+      'Vamos passear? 🐾',
+      'Rrrrr... brincadeira! 😜',
+      'Me dá carinho! 💙'
+    ];
+
+    const caras = ['🐶', '🐕', '🦮', '🐩', '🐕‍🦺'];
+
+    let cliques = 0;
+
+    function enlouquecer() {
+      cliques++;
+
+      latido.textContent   = falas[Math.floor(Math.random() * falas.length)];
+      cachorro.textContent = caras[Math.floor(Math.random() * caras.length)];
+      contador.textContent = cliques + (cliques === 1 ? ' latido' : ' latidos');
+
+      // reinicia a animacao de giro
+      cachorro.classList.remove('girando');
+      void cachorro.offsetWidth;
+      cachorro.classList.add('girando');
+    }
+
+    cachorro.addEventListener('click', enlouquecer);
+    cachorro.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enlouquecer(); }
+    });
+
+    cachorro.addEventListener('animationend', e => {
+      if (e.animationName === 'girar') cachorro.classList.remove('girando');
+    });
+  </script>
+
+</body>
+</html>
