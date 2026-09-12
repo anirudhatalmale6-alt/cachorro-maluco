@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cachorro Maluco - Arquivos e guia para publicar</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%90%B6</text></svg>">
+<style>
+  :root{
+    --azul:#0b6b8f;
+    --azul-claro:#4facfe;
+    --tinta:#1b2a33;
+    --suave:#5a6b75;
+    --linha:#dfe8ee;
+    --papel:#fff;
+    --fundo:#eef6fb;
+    --destaque:#fff8dd;
+    --borda-destaque:#f0d98a;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    background:var(--fundo);
+    color:var(--tinta);
+    font-family:"Segoe UI",Roboto,Arial,Helvetica,sans-serif;
+    font-size:18px;
+    line-height:1.65;
+    padding:0 1rem 5rem;
+  }
+
+  .capa{
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    margin:0 -1rem 2rem;
+    padding:2.6rem 1rem 2.2rem;
+    text-align:center;
+    color:#fff;
+  }
+  .capa .cao{font-size:4.2rem;line-height:1}
+  .capa h1{font-size:clamp(1.6rem,5vw,2.4rem);margin:.3rem 0 .4rem;text-shadow:2px 2px 6px rgba(0,0,0,.22)}
+  .capa p{opacity:.95;font-size:clamp(1rem,3vw,1.15rem)}
+
+  main{max-width:760px;margin:0 auto}
+
+  h2{
+    font-size:clamp(1.25rem,3.6vw,1.6rem);
+    color:var(--azul);
+    margin:2.6rem 0 .9rem;
+    padding-bottom:.45rem;
+    border-bottom:3px solid var(--linha);
+  }
+
+  .cartao{
+    background:var(--papel);
+    border:1px solid var(--linha);
+    border-radius:14px;
+    padding:1.3rem 1.4rem;
+    margin-bottom:1rem;
+    box-shadow:0 2px 5px rgba(15,50,70,.05);
+  }
+
+  /* ---- downloads ---- */
+  .arquivo{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    flex-wrap:wrap;
+    padding:.9rem 0;
+    border-bottom:1px solid var(--linha);
+  }
+  .arquivo:last-child{border-bottom:none}
+  .arquivo .info{flex:1 1 15rem;min-width:0}
+  .arquivo .nome{font-weight:700;word-break:break-all}
+  .arquivo .oque{color:var(--suave);font-size:.92rem}
+
+  .baixar{
+    display:inline-block;
+    background:var(--azul);
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    padding:.6rem 1.5rem;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .baixar:hover{background:#095673}
+
+  .miniatura{
+    width:76px;height:60px;
+    object-fit:cover;
+    border-radius:8px;
+    border:1px solid var(--linha);
+    background:#fff;
+    flex:0 0 auto;
+  }
+
+  /* ---- passos ---- */
+  .passo{
+    background:var(--papel);
+    border:1px solid var(--linha);
+    border-left:6px solid var(--azul-claro);
+    border-radius:12px;
+    padding:1.2rem 1.4rem;
+    margin-bottom:1rem;
+  }
+  .passo h3{
+    font-size:1.12rem;
+    color:var(--azul);
+    margin-bottom:.5rem;
+  }
+  .passo ol,.passo ul{margin:.4rem 0 0 1.3rem}
+  .passo li{margin-bottom:.45rem}
+
+  code{
+    background:#eef3f7;
+    border:1px solid var(--linha);
+    border-radius:5px;
+    padding:.1rem .45rem;
+    font-family:Consolas,Monaco,monospace;
+    font-size:.93em;
+    word-break:break-word;
+  }
+
+  .atencao{
+    background:var(--destaque);
+    border:1px solid var(--borda-destaque);
+    border-left:6px solid #e8b93d;
+    border-radius:12px;
+    padding:1.1rem 1.3rem;
+    margin:1rem 0;
+  }
+  .atencao strong{display:block;margin-bottom:.3rem}
+
+  /* ---- textos para copiar ---- */
+  .copiar{
+    background:var(--papel);
+    border:1px solid var(--linha);
+    border-radius:12px;
+    padding:1.1rem 1.3rem;
+    margin-bottom:1rem;
+  }
+  .copiar h3{font-size:1.05rem;color:var(--azul);margin-bottom:.6rem}
+  .copiar textarea{
+    width:100%;
+    border:1px solid var(--linha);
+    border-radius:8px;
+    padding:.75rem;
+    font-family:inherit;
+    font-size:.95rem;
+    line-height:1.55;
+    color:var(--tinta);
+    background:#fbfdff;
+    resize:vertical;
+  }
+  .btn-copiar{
+    margin-top:.6rem;
+    background:#e8f2f8;
+    border:1px solid #bcd8e8;
+    color:var(--azul);
+    font-family:inherit;
+    font-size:.95rem;
+    font-weight:700;
+    padding:.5rem 1.2rem;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  .btn-copiar:hover{background:#d9eaf4}
+
+  .rodape{
+    max-width:760px;
+    margin:3rem auto 0;
+    padding-top:1.4rem;
+    border-top:1px solid var(--linha);
+    color:var(--suave);
+    font-size:.95rem;
+    text-align:center;
+  }
+  .rodape a{color:var(--azul)}
+
+  @media (max-width:520px){
+    body{font-size:17px}
+    .baixar{width:100%;text-align:center}
+  }
+</style>
+</head>
+<body>
+
+<header class="capa">
+  <div class="cao">🐶</div>
+  <h1>Cachorro Maluco</h1>
+  <p>Todos os arquivos e o passo a passo para publicar</p>
+</header>
+
+<main>
+
+  <div class="atencao">
+    <strong>Antes de começar</strong>
+    Baixe os 6 arquivos abaixo. Eles vão para a pasta <code>Downloads</code> do seu
+    computador. Não abra e não descompacte o arquivo .zip — ele precisa continuar
+    fechado do jeito que está.
+  </div>
+
+  <h2>1. Baixe os arquivos</h2>
+
+  <div class="cartao">
+
+    <div class="arquivo">
+      <div class="miniatura" style="display:flex;align-items:center;justify-content:center;font-size:1.8rem">🎮</div>
+      <div class="info">
+        <div class="nome">cachorro-maluco-jogo.zip</div>
+        <div class="oque">O jogo. É este que você envia para o site.</div>
+      </div>
+      <a class="baixar" href="loja/cachorro-maluco-jogo.zip" download>Baixar</a>
+    </div>
+
+    <div class="arquivo">
+      <img class="miniatura" src="loja/capa.png" alt="Capa do jogo">
+      <div class="info">
+        <div class="nome">capa.png</div>
+        <div class="oque">A capa. Vai no campo "Cover image".</div>
+      </div>
+      <a class="baixar" href="loja/capa.png" download>Baixar</a>
+    </div>
+
+    <div class="arquivo">
+      <img class="miniatura" src="loja/tela1-inicio.png" alt="Tela inicial">
+      <div class="info">
+        <div class="nome">tela1-inicio.png</div>
+        <div class="oque">Foto 1. Vai no campo "Screenshots".</div>
+      </div>
+      <a class="baixar" href="loja/tela1-inicio.png" download>Baixar</a>
+    </div>
+
+    <div class="arquivo">
+      <img class="miniatura" src="loja/tela2-jogando.png" alt="Jogando">
+      <div class="info">
+        <div class="nome">tela2-jogando.png</div>
+        <div class="oque">Foto 2. Vai no campo "Screenshots".</div>
+      </div>
+      <a class="baixar" href="loja/tela2-jogando.png" download>Baixar</a>
+    </div>
+
+    <div class="arquivo">
+      <img class="miniatura" src="loja/tela3-fim.png" alt="Fim de jogo">
+      <div class="info">
+        <div class="nome">tela3-fim.png</div>
+        <div class="oque">Foto 3. Vai no campo "Screenshots".</div>
+      </div>
+      <a class="baixar" href="loja/tela3-fim.png" download>Baixar</a>
+    </div>
+
+    <div class="arquivo">
+      <img class="miniatura" src="loja/tela4-computador.png" alt="No computador">
+      <div class="info">
+        <div class="nome">tela4-computador.png</div>
+        <div class="oque">Foto 4. Vai no campo "Screenshots".</div>
+      </div>
+      <a class="baixar" href="loja/tela4-computador.png" download>Baixar</a>
+    </div>
+
+  </div>
+
+  <h2>2. Siga os passos</h2>
+
+  <div class="passo">
+    <h3>Passo 1 — Criar a conta (só a primeira vez)</h3>
+    <ol>
+      <li>Entre no site <code>itch.io</code></li>
+      <li>Clique em <strong>Register</strong>, no canto de cima à direita</li>
+      <li>Preencha <strong>Username</strong> (nome sem espaço), <strong>Email</strong> e <strong>Password</strong></li>
+      <li>Marque a caixinha <em>"I am interested in distributing content on itch.io"</em></li>
+      <li>Clique em <strong>Create account</strong></li>
+      <li>Abra o seu email e clique no link de confirmação que eles enviam</li>
+    </ol>
+  </div>
+
+  <div class="passo">
+    <h3>Passo 2 — Criar o jogo</h3>
+    <ol>
+      <li>Entre em <code>itch.io/dashboard</code></li>
+      <li>Clique no botão <strong>Create new project</strong></li>
+    </ol>
+  </div>
+
+  <div class="passo">
+    <h3>Passo 3 — Preencher a ficha</h3>
+    <ul>
+      <li><strong>Title:</strong> Cachorro Maluco</li>
+      <li><strong>Short description:</strong> use o Texto 1, mais abaixo</li>
+      <li><strong>Classification:</strong> Games</li>
+      <li><strong>Kind of project:</strong> HTML</li>
+      <li><strong>Release status:</strong> Released</li>
+      <li><strong>Pricing:</strong> No payments</li>
+    </ul>
+  </div>
+
+  <div class="atencao">
+    <strong>O "Kind of project" tem que ser HTML</strong>
+    Se marcar outra coisa, o jogo não abre no navegador e ninguém consegue jogar.
+  </div>
+
+  <div class="passo">
+    <h3>Passo 4 — Enviar o jogo</h3>
+    <ol>
+      <li>Desça até a parte <strong>Uploads</strong></li>
+      <li>Clique em <strong>Upload files</strong></li>
+      <li>Escolha o arquivo <code>cachorro-maluco-jogo.zip</code> na pasta Downloads</li>
+      <li>Espere a barrinha encher até o fim</li>
+      <li>Vai aparecer uma caixinha escrita <em>"This file will be played in the browser"</em>. <strong>Marque ela.</strong></li>
+    </ol>
+  </div>
+
+  <div class="atencao">
+    <strong>Esta é a caixinha mais importante de todas</strong>
+    Sem marcar <em>"This file will be played in the browser"</em>, o site trata o jogo
+    como um arquivo para baixar e ninguém consegue jogar direto na página.
+  </div>
+
+  <div class="passo">
+    <h3>Passo 5 — Ajustar o tamanho da tela</h3>
+    <p>Logo abaixo aparece <strong>Embed options</strong>:</p>
+    <ul>
+      <li><strong>Viewport width:</strong> 400</li>
+      <li><strong>Viewport height:</strong> 720</li>
+      <li>Marque <strong>Mobile friendly</strong></li>
+      <li>Marque <strong>Fullscreen button</strong></li>
+    </ul>
+  </div>
+
+  <div class="passo">
+    <h3>Passo 6 — As imagens</h3>
+    <ul>
+      <li><strong>Cover image:</strong> capa.png</li>
+      <li><strong>Screenshots:</strong> tela1-inicio.png, tela2-jogando.png, tela3-fim.png e tela4-computador.png</li>
+    </ul>
+  </div>
+
+  <div class="passo">
+    <h3>Passo 7 — Descrição e etiquetas</h3>
+    <ul>
+      <li><strong>Details</strong> (descrição longa): use o Texto 2, mais abaixo</li>
+      <li><strong>Genre:</strong> Action</li>
+      <li><strong>Tags:</strong> use o Texto 3, digitando um por um</li>
+    </ul>
+  </div>
+
+  <div class="passo">
+    <h3>Passo 8 — Publicar</h3>
+    <ol>
+      <li>Lá embaixo, clique em <strong>Save &amp; view page</strong></li>
+      <li>Veja como ficou e teste jogar</li>
+      <li>Estando tudo certo, clique em <strong>Edit game</strong> de novo</li>
+      <li>Mude <strong>Visibility &amp; access</strong> para <strong>Public</strong></li>
+      <li>Salve</li>
+    </ol>
+    <p style="margin-top:.6rem">Pronto. A partir daqui qualquer pessoa do mundo pode jogar.</p>
+  </div>
+
+  <h2>3. Textos para copiar e colar</h2>
+
+  <div class="copiar">
+    <h3>Texto 1 — Short description</h3>
+    <textarea rows="2" readonly>Ajude o Cachorro Maluco a pegar ossos, bolinhas e petiscos. Desvie das abelhas!</textarea>
+    <button class="btn-copiar" type="button">Copiar</button>
+  </div>
+
+  <div class="copiar">
+    <h3>Texto 2 — Details (descrição longa)</h3>
+    <textarea rows="16" readonly>Cachorro Maluco e um joguinho rapido e divertido, para todas as idades.
+
+Arraste o dedo na tela e o cachorro acompanha. No computador, use o mouse ou as setinhas do teclado.
+
+Como jogar:
+- Pegue o osso, a bolinha e o petisco para fazer pontos
+- Desvie da abelha e da bota, elas tiram uma vida
+- O coracao devolve uma vida
+- A cada 150 pontos o jogo sobe de fase e fica mais rapido
+- Seu recorde fica salvo no aparelho
+
+Funciona no celular e no computador, direto no navegador. Nao precisa instalar nada. E de graca.
+
+Ate onde voce consegue chegar?</textarea>
+    <button class="btn-copiar" type="button">Copiar</button>
+  </div>
+
+  <div class="copiar">
+    <h3>Texto 3 — Tags</h3>
+    <textarea rows="11" readonly>cachorro
+dog
+casual
+arcade
+2D
+mobile
+html5
+family-friendly
+kids
+portuguese</textarea>
+    <button class="btn-copiar" type="button">Copiar</button>
+  </div>
+
+  <div class="atencao">
+    <strong>Travou em algum passo?</strong>
+    Tire uma foto ou um print da tela e mande no nosso chat do Freelancer.
+    Eu digo exatamente onde clicar. Pode perguntar quantas vezes precisar,
+    sem custo nenhum.
+  </div>
+
+</main>
+
+<footer class="rodape">
+  <p>O jogo já está no ar e funcionando: <a href="./">jogar agora</a></p>
+</footer>
+
+<script>
+  document.querySelectorAll('.btn-copiar').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var area = btn.parentElement.querySelector('textarea');
+      area.select();
+      area.setSelectionRange(0, 999999);          // precisa disso no celular
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch(e){}
+      if (navigator.clipboard && !ok) {
+        navigator.clipboard.writeText(area.value).then(function(){
+          btn.textContent = 'Copiado!';
+          setTimeout(function(){ btn.textContent = 'Copiar'; }, 1800);
+        });
+        return;
+      }
+      btn.textContent = ok ? 'Copiado!' : 'Selecione e use Ctrl+C';
+      setTimeout(function(){ btn.textContent = 'Copiar'; }, 1800);
+    });
+  });
+</script>
+
+</body>
+</html>
