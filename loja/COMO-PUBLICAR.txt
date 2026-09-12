@@ -1,0 +1,184 @@
+=====================================================
+   CACHORRO MALUCO - COMO PUBLICAR NO ITCH.IO
+   Guia passo a passo. E de graca, do comeco ao fim.
+=====================================================
+
+O que voce vai precisar (ja te mandei tudo no chat):
+
+  cachorro-maluco-jogo.zip ... o jogo
+  capa.png ................... a capa
+  tela1-inicio.png ........... foto 1
+  tela2-jogando.png .......... foto 2
+  tela3-fim.png .............. foto 3
+  tela4-computador.png ....... foto 4
+
+Baixa esses 6 arquivos no celular ou no computador antes de comecar.
+NAO abra o zip. Ele tem que continuar fechado.
+
+
+-----------------------------------------------------
+PASSO 1 - CRIAR A CONTA (so a primeira vez)
+-----------------------------------------------------
+
+1. Entra no site:  itch.io
+2. Clica em "Register" (fica no canto de cima, a direita)
+3. Preenche:
+     Username  -> o nome que voce quiser, sem espaco
+     Email     -> o SEU email
+     Password  -> uma senha sua
+4. Marca a caixinha "I am interested in distributing content
+   on itch.io" (isso libera a parte de publicar jogo)
+5. Clica em "Create account"
+6. Abre o seu email e clica no link de confirmacao que eles mandam
+
+Pronto, a conta e sua.
+
+
+-----------------------------------------------------
+PASSO 2 - CRIAR O JOGO
+-----------------------------------------------------
+
+1. Entra em:  itch.io/dashboard
+2. Clica no botao "Create new project"
+
+
+-----------------------------------------------------
+PASSO 3 - PREENCHER A FICHA
+-----------------------------------------------------
+
+Vai aparecer um formulario. Preenche assim
+(pode copiar e colar os textos que estao mais abaixo):
+
+  Title .................. Cachorro Maluco
+  Short description ...... (copia o TEXTO 1 la embaixo)
+  Classification ......... Games
+  Kind of project ........ HTML
+  Release status ......... Released
+  Pricing ................ No payments
+
+O "Kind of project" TEM que ser HTML. Se marcar errado,
+o jogo nao abre no navegador.
+
+
+-----------------------------------------------------
+PASSO 4 - SUBIR O JOGO
+-----------------------------------------------------
+
+1. Desce ate a parte "Uploads"
+2. Clica em "Upload files"
+3. Escolhe o arquivo  cachorro-maluco-jogo.zip
+4. Espera a barrinha encher ate o fim
+5. Quando terminar, aparece uma caixinha escrito
+   "This file will be played in the browser"
+   MARCA ESSA CAIXINHA. Essa e a parte mais importante
+   de todas. Sem ela o jogo nao roda.
+
+
+-----------------------------------------------------
+PASSO 5 - AJUSTAR A TELA
+-----------------------------------------------------
+
+Logo abaixo aparece "Embed options". Preenche:
+
+  Viewport width ......... 400
+  Viewport height ........ 720
+  Mobile friendly ........ marcar
+  Fullscreen button ...... marcar
+
+Isso deixa o jogo no tamanho certo e com botao de
+tela cheia no celular.
+
+
+-----------------------------------------------------
+PASSO 6 - AS IMAGENS
+-----------------------------------------------------
+
+  Cover image  -> capa.png
+                  (e a foto que aparece na lista do site)
+
+  Screenshots  -> tela1-inicio.png
+                  tela2-jogando.png
+                  tela3-fim.png
+                  tela4-computador.png
+
+
+-----------------------------------------------------
+PASSO 7 - DESCRICAO E ETIQUETAS
+-----------------------------------------------------
+
+  Details / descricao longa -> copia o TEXTO 2 la embaixo
+
+  Genre -> Action
+
+  Tags  -> copia o TEXTO 3 la embaixo
+           (vai digitando um por um, o site vai separando)
+
+
+-----------------------------------------------------
+PASSO 8 - PUBLICAR
+-----------------------------------------------------
+
+1. La embaixo clica em "Save & view page"
+2. Olha se ficou bom, testa jogar
+3. Se estiver tudo certo, clica em "Edit game" de novo
+4. Muda a "Visibility & access" para "Public"
+5. Salva
+
+A partir daqui o jogo esta publicado e qualquer pessoa
+do mundo pode jogar.
+
+
+=====================================================
+   TEXTOS PARA COPIAR E COLAR
+=====================================================
+
+--- TEXTO 1 - descricao curta -------------------------
+
+Ajude o Cachorro Maluco a pegar ossos, bolinhas e petiscos. Desvie das abelhas!
+
+
+--- TEXTO 2 - descricao longa -------------------------
+
+Cachorro Maluco e um joguinho rapido e divertido, para
+todas as idades.
+
+Arraste o dedo na tela e o cachorro acompanha. No
+computador, use o mouse ou as setinhas do teclado.
+
+Como jogar:
+- Pegue o osso, a bolinha e o petisco para fazer pontos
+- Desvie da abelha e da bota, elas tiram uma vida
+- O coracao devolve uma vida
+- A cada 150 pontos o jogo sobe de fase e fica mais rapido
+- Seu recorde fica salvo no aparelho
+
+Funciona no celular e no computador, direto no navegador.
+Nao precisa instalar nada. E de graca.
+
+Ate onde voce consegue chegar?
+
+
+--- TEXTO 3 - etiquetas (tags) ------------------------
+
+cachorro
+dog
+casual
+arcade
+2D
+mobile
+html5
+family-friendly
+kids
+portuguese
+
+
+=====================================================
+   SE DER ALGUM PROBLEMA
+=====================================================
+
+Me manda mensagem aqui no chat contando o que apareceu
+na tela, ou tira uma foto do erro. Eu arrumo e te devolvo
+o arquivo certo. Nao tem custo nenhum.
+
+Se o site te pedir alguma mudanca no jogo (tamanho,
+tela de carregamento, o que for), e so me falar.
